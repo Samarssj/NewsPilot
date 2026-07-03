@@ -298,4 +298,5 @@ This project is intended for educational, research, and portfolio purposes. Feel
 ---
 
 ## ⭐ If you found this project useful, consider giving it a star!
+<img width="1440" height="900" alt="Screenshot 2026-07-04 at 01 22 13" src="https://github.com/user-attachments/assets/2cee2a7b-db42-4a11-872c-fb17d1155f75" />
 
