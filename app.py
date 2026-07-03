@@ -326,8 +326,8 @@ with st.sidebar:
     top_left, top_right = st.columns([3, 1])
     with top_left:
         st.markdown(
-            "<div class='sidebar-eyebrow'>AI Wire Service</div>"
-            "<div class='sidebar-mast'>🗞️ Wire Desk</div>",
+            "<div class='sidebar-eyebrow'>AI NEWS Service</div>"
+            "<div class='sidebar-mast'>🗞️ NewsPilot</div>",
             unsafe_allow_html=True,
         )
     with top_right:
