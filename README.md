@@ -1,122 +1,301 @@
-# 📰 News Intelligence Assistant
+# 📰 NewsPilot — Hybrid News Intelligence Platform
 
-A RAG-based assistant that fetches the latest news and answers your questions
-with cited sources. Runs locally — only your question and retrieved excerpts
-are sent to Claude; embeddings and storage are fully local and free.
+> **An AI-powered Hybrid RAG platform that delivers accurate, source-backed answers using live news and general AI knowledge.**
 
-## How it works
+PulseAI combines **Retrieval-Augmented Generation (RAG)** with **Google Gemini** to provide trustworthy responses. When relevant news exists in the local knowledge base, answers are generated from retrieved articles with citations. If no relevant news is found, PulseAI intelligently falls back to Gemini's general knowledge, ensuring users always receive meaningful responses.
 
+---
+
+## ✨ Features
+
+* 📰 Fetches the latest news from **RSS Feeds** and **NewsAPI**
+* 🤖 Hybrid AI answering with **RAG + Gemini**
+* 📚 Local vector database using **ChromaDB**
+* 🔍 Semantic search powered by **Sentence Transformers**
+* 💬 Interactive Streamlit chat interface
+* 📎 Source-backed answers with clickable references
+* ⚡ Automatic fallback to Gemini when news is unavailable
+* 💾 Local embeddings and vector storage
+* 🎯 Configurable retrieval settings
+
+---
+
+# 🏗️ System Architecture
+
+```text
+                ┌───────────────────────────┐
+                │   RSS Feeds / NewsAPI     │
+                └─────────────┬─────────────┘
+                              │
+                              ▼
+                    Fetch Latest Articles
+                              │
+                              ▼
+                     Text Chunking Engine
+                              │
+                              ▼
+             SentenceTransformer Embeddings
+                              │
+                              ▼
+                  ChromaDB Vector Database
+                              │
+               ┌──────────────┴──────────────┐
+               │                             │
+               ▼                             ▼
+      Retrieve Relevant Chunks      No Relevant Chunks
+               │                             │
+               ▼                             ▼
+         News-Based Response        Gemini Knowledge
+               │                             │
+               └──────────────┬──────────────┘
+                              ▼
+                 Final Answer with Sources
 ```
-RSS feeds / NewsAPI  -->  chunk + embed (local)  -->  ChromaDB (local vector store)
-                                                              |
-                                                              v
-                          your question  -->  retrieve top-k chunks  -->  Claude  -->  answer + [1][2][3] sources
+
+---
+
+# 🚀 Tech Stack
+
+| Category        | Technology                           |
+| --------------- | ------------------------------------ |
+| Frontend        | Streamlit                            |
+| LLM             | Google Gemini                        |
+| Vector Database | ChromaDB                             |
+| Embeddings      | Sentence Transformers                |
+| Data Sources    | RSS Feeds, NewsAPI                   |
+| Language        | Python                               |
+| Retrieval       | RAG (Retrieval-Augmented Generation) |
+
+---
+
+# ⚙️ How It Works
+
+### 1️⃣ News Collection
+
+PulseAI continuously fetches news from:
+
+* RSS Feeds
+* NewsAPI *(optional)*
+
+Articles are cleaned and normalized before processing.
+
+---
+
+### 2️⃣ Local Embedding
+
+Each article is
+
+* Split into semantic chunks
+* Converted into embeddings using Sentence Transformers
+* Stored locally inside ChromaDB
+
+No embeddings are generated using external APIs.
+
+---
+
+### 3️⃣ Intelligent Retrieval
+
+When a question is asked:
+
+* The query is embedded
+* Top-K most relevant chunks are retrieved
+* Similarity threshold determines whether the retrieved news is sufficiently relevant
+
+---
+
+### 4️⃣ Hybrid Response Generation
+
+If relevant articles exist:
+
+> ✅ Answer is generated using retrieved news with citations.
+
+Otherwise:
+
+> 🤖 Gemini answers using its general knowledge.
+
+This hybrid workflow provides both **freshness** and **broad knowledge coverage**.
+
+---
+
+# 📂 Project Structure
+
+```text
+PulseAI/
+│
+├── app.py                 # Streamlit Web Interface
+├── config.py              # Project Configuration
+├── news_fetcher.py        # RSS & NewsAPI Fetching
+├── vector_store.py        # ChromaDB + Embeddings
+├── rag_engine.py          # Hybrid RAG Pipeline
+├── ingest.py              # Fetch & Index News
+├── ask.py                 # Command-Line Assistant
+├── feeds.txt              # Custom RSS Feeds
+├── requirements.txt
+├── .env.example
+└── data/
+    └── chroma/            # Local Vector Database
 ```
 
-- **Ingestion** (`news_fetcher.py`): pulls live articles from RSS feeds (no key
-  required) and optionally NewsAPI.org for broader coverage.
-- **Vector store** (`vector_store.py`): chunks article text, embeds it locally
-  with `sentence-transformers`, and persists it in a local ChromaDB instance.
-- **RAG engine** (`rag_engine.py`): retrieves the most relevant chunks for a
-  question and asks Claude to answer strictly from that context, citing
-  sources as `[1]`, `[2]`, etc.
+---
 
-## Setup
+# ⚡ Installation
+
+### Clone Repository
 
 ```bash
-# 1. Create and activate a virtual environment (recommended)
-python3 -m venv venv
-source venv/bin/activate        # Windows: venv\Scripts\activate
-
-# 2. Install dependencies
-pip install -r requirements.txt
-
-# 3. Configure API keys
-cp .env.example .env
-# then edit .env and set ANTHROPIC_API_KEY (required)
-# NEWSAPI_KEY is optional — leave blank to use RSS feeds only
+git clone <repository-url>
+cd PulseAI
 ```
 
-Get an Anthropic API key at https://console.anthropic.com/
-Get a free NewsAPI key (optional) at https://newsapi.org/
+### Create Virtual Environment
 
-## Usage
+```bash
+python -m venv venv
+```
 
-### 1. Ingest the latest news
+Linux / macOS
+
+```bash
+source venv/bin/activate
+```
+
+Windows
+
+```bash
+venv\Scripts\activate
+```
+
+### Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+# 🔑 Environment Variables
+
+Create a `.env` file.
+
+```env
+GEMINI_API_KEY=YOUR_API_KEY
+NEWSAPI_KEY=YOUR_OPTIONAL_KEY
+```
+
+> **NewsAPI is optional.** PulseAI works using RSS feeds even without it.
+
+---
+
+# ▶️ Usage
+
+## Fetch Latest News
 
 ```bash
 python ingest.py
 ```
 
-Options:
-```bash
-python ingest.py --no-fulltext            # faster: index RSS summaries only
-python ingest.py --feeds feeds.txt         # use a custom feed list
-python ingest.py --query "AI regulation"   # also pull NewsAPI articles on a topic
-```
-
-Run this periodically (e.g. via cron every hour) to keep the index fresh:
-```bash
-# crontab -e
-0 * * * * cd /path/to/news_intel_assistant && /path/to/venv/bin/python ingest.py >> ingest.log 2>&1
-```
-
-### 2. Ask questions
+Optional commands
 
 ```bash
-python ask.py "What's the latest on the EU AI Act?"
+python ingest.py --no-fulltext
+
+python ingest.py --query "Artificial Intelligence"
+
+python ingest.py --feeds feeds.txt
 ```
 
-Or run interactively:
+---
+
+## Ask Questions (CLI)
+
 ```bash
 python ask.py
-Ask> What happened in the markets today?
 ```
 
-### 3. Or use the web UI
+or
+
+```bash
+python ask.py "Latest AI regulations"
+```
+
+---
+
+## Launch Web Application
 
 ```bash
 streamlit run app.py
 ```
 
-This gives you a browser UI to fetch news and ask questions, with sources
-shown as clickable links.
+---
 
-## Customizing
+# 💬 Example Questions
 
-- **Feeds**: edit `config.DEFAULT_RSS_FEEDS` or pass `--feeds yourfile.txt`.
-- **Embedding model**: change `EMBEDDING_MODEL` in `.env` to any
-  `sentence-transformers` model (e.g. `all-mpnet-base-v2` for higher quality,
-  slower).
-- **Claude model**: change `CLAUDE_MODEL` in `.env`.
-- **Chunk size / retrieval depth**: tune `CHUNK_SIZE`, `CHUNK_OVERLAP`,
-  `TOP_K_DEFAULT` in `config.py`.
+* What's happening in the AI industry today?
+* Latest developments in the stock market?
+* Explain the recent Israel–Iran conflict.
+* What are today's technology headlines?
+* Tell me the latest sports news.
+* What's the current state of cryptocurrency?
 
-## Notes & limitations
+---
 
-- Full-text extraction (`newspaper3k`) works on most news sites but can fail
-  on paywalled or JS-heavy pages — it falls back to the RSS summary in that case.
-- The assistant answers **only from indexed articles** — if nothing relevant
-  is indexed yet, it will tell you rather than guessing.
-- ChromaDB data persists in `./data/chroma` between runs; delete that folder
-  to reset the index.
-- This is a starting point, not a production deployment — for production use
-  consider adding deduplication-by-content (not just URL), rate limiting,
-  and a real task scheduler instead of cron.
+# 📊 Hybrid Answer Flow
 
-## Project structure
+| Situation               | Response Source        |
+| ----------------------- | ---------------------- |
+| Relevant news available | 📰 Local News Database |
+| No relevant news found  | 🤖 Gemini Knowledge    |
 
-```
-news_intel_assistant/
-├── config.py          # settings (feeds, model names, chunking params)
-├── news_fetcher.py     # RSS + NewsAPI fetching and normalization
-├── vector_store.py      # chunking, local embeddings, ChromaDB persistence
-├── rag_engine.py        # retrieval + Claude answer generation with citations
-├── ingest.py            # CLI: fetch news -> index it
-├── ask.py               # CLI: ask questions, get sourced answers
-├── app.py               # Streamlit web UI
-├── feeds.txt            # example custom feed list
-├── requirements.txt
-├── .env.example
-└── data/                # local ChromaDB storage (created on first run)
-```
+---
+
+# 🎯 Why PulseAI?
+
+Unlike traditional chatbots that rely solely on an LLM or static retrieval, PulseAI intelligently combines both approaches.
+
+✅ Live News Retrieval
+
+✅ Semantic Search
+
+✅ Source-backed Answers
+
+✅ Local Vector Storage
+
+✅ Hybrid AI Responses
+
+✅ Fast and Lightweight
+
+---
+
+# 🔮 Future Improvements
+
+* User authentication
+* Chat history persistence
+* News summarization
+* Trending topic analytics
+* Multi-language support
+* Voice interaction
+* Real-time streaming responses
+* Docker deployment
+* Cloud-hosted vector database
+* Admin dashboard
+
+---
+
+# 📌 Notes
+
+* ChromaDB persists data locally.
+* Full-text extraction may not work for paywalled websites.
+* RSS summaries are used automatically when extraction fails.
+* The quality of responses depends on indexed news freshness.
+* Gemini fallback ensures the assistant remains useful even when relevant news is unavailable.
+
+---
+
+# 📄 License
+
+This project is intended for educational, research, and portfolio purposes. Feel free to modify and extend it for your own use.
+
+---
+
+## ⭐ If you found this project useful, consider giving it a star!
+
