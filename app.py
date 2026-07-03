@@ -11,7 +11,7 @@ from vector_store import NewsVectorStore
 from rag_engine import NewsRAGEngine, SOURCE_NEWS
 
 st.set_page_config(
-    page_title="Wire Desk — News AI",
+    page_title="NewsPilot — News AI",
     page_icon="🗞️",
     layout="wide",
     initial_sidebar_state="expanded",
