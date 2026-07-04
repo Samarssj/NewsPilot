@@ -53,10 +53,10 @@ def _get_int(name: str, default: int) -> int:
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
 CLAUDE_MODEL = os.getenv("CLAUDE_MODEL", "claude-sonnet-4-6")
 
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
+GEMINI_API_KEY = os.getenv("AQ.Ab8RN6K0w48Sf856dkzn5yIgKTmeILHRrKu_2GDZPH8UO4WsQA", "")
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
 
-NEWSAPI_KEY = os.getenv("NEWSAPI_KEY", "")
+NEWSAPI_KEY = os.getenv("29ebed0adb9a4d0aac1c006718307496", "")
 
 # ---------------------------------------------------------------------------
 # Vector store
