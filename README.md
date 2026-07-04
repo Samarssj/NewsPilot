@@ -72,7 +72,7 @@ PulseAI combines **Retrieval-Augmented Generation (RAG)** with **Google Gemini**
 
 ### 1️⃣ News Collection
 
-PulseAI continuously fetches news from:
+Newspilot continuously fetches news from:
 
 * RSS Feeds
 * NewsAPI *(optional)*
