@@ -8,7 +8,7 @@ anywhere in the project.
 """
 
 import os
-
+import streamlit as st
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -50,13 +50,17 @@ def _get_int(name: str, default: int) -> int:
 
 # Kept for backward compatibility with any tooling/docs that still reference
 # Claude. The active generation engine for this project is Gemini (below).
-ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
-CLAUDE_MODEL = os.getenv("CLAUDE_MODEL", "claude-sonnet-4-6")
+try:
+    GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
+except Exception:
+    GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 
-GEMINI_API_KEY = os.getenv("AQ.Ab8RN6K0w48Sf856dkzn5yIgKTmeILHRrKu_2GDZPH8UO4WsQA", "")
+try:
+    NEWSAPI_KEY = st.secrets["NEWSAPI_KEY"]
+except Exception:
+    NEWSAPI_KEY = os.getenv("NEWSAPI_KEY", "")
+
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
-
-NEWSAPI_KEY = os.getenv("29ebed0adb9a4d0aac1c006718307496", "")
 
 # ---------------------------------------------------------------------------
 # Vector store
