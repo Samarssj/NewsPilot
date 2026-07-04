@@ -182,7 +182,7 @@ GEMINI_API_KEY=YOUR_API_KEY
 NEWSAPI_KEY=YOUR_OPTIONAL_KEY
 ```
 
-> **NewsAPI is optional.** PulseAI works using RSS feeds even without it.
+> **NewsAPI is optional.** news pilot works using RSS feeds even without it.
 
 ---
 
@@ -250,7 +250,7 @@ streamlit run app.py
 
 # 🎯 Why PulseAI?
 
-Unlike traditional chatbots that rely solely on an LLM or static retrieval, PulseAI intelligently combines both approaches.
+Unlike traditional chatbots that rely solely on an LLM or static retrieval, NewsPilot intelligently combines both approaches.
 
 ✅ Live News Retrieval
 
