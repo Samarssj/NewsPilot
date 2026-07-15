@@ -2,7 +2,7 @@
 
 > **An AI-powered Hybrid RAG platform that delivers accurate, source-backed answers using live news and general AI knowledge.**
 
-PulseAI combines **Retrieval-Augmented Generation (RAG)** with **Google Gemini** to provide trustworthy responses. When relevant news exists in the local knowledge base, answers are generated from retrieved articles with citations. If no relevant news is found, PulseAI intelligently falls back to Gemini's general knowledge, ensuring users always receive meaningful responses.
+NewsPilot combines **Retrieval-Augmented Generation (RAG)** with **Google Gemini** to provide trustworthy responses. When relevant news exists in the local knowledge base, answers are generated from retrieved articles with citations. If no relevant news is found, PulseAI intelligently falls back to Gemini's general knowledge, ensuring users always receive meaningful responses.
 
 ---
 
