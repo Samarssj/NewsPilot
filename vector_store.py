@@ -180,6 +180,10 @@ class NewsVectorStore:
         `distance` field (lower = more relevant) so the caller can apply a
         relevance threshold.
 
+        Chunks retrieved with no metadata attached (e.g. from an older or
+        partially-corrupted ingestion run) are skipped rather than allowed
+        to crash the whole query.
+
         Args:
             question: The user's natural-language question.
             top_k: Number of distinct articles to return. Defaults to
@@ -212,11 +216,24 @@ class NewsVectorStore:
         metas = results.get("metadatas", [[]])[0]
         distances = results.get("distances", [[]])[0]
 
+        logger.info(
+            "Retrieved %d raw chunks for %r, distances=%s",
+            len(docs), question, [round(d, 3) for d in distances],
+        )
+
         # Group chunks by article_id (fallback to url, then title) so that
         # multiple chunks from one article merge into a single coherent hit.
         articles: Dict[str, dict] = {}
 
         for doc, meta, dist in zip(docs, metas, distances):
+            if meta is None:
+                logger.warning(
+                    "Skipping a retrieved chunk with no metadata attached "
+                    "(likely stored without metadata during an earlier "
+                    "ingestion run)."
+                )
+                continue
+
             key = meta.get("article_id") or meta.get("url") or meta.get("title", "unknown")
 
             if key not in articles:
