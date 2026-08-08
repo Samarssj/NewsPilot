@@ -60,7 +60,7 @@ try:
 except Exception:
     NEWSAPI_KEY = os.getenv("NEWSAPI_KEY", "")
 
-GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-flash-latest")
 
 # ---------------------------------------------------------------------------
 # Vector store
