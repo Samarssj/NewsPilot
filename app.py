@@ -372,9 +372,9 @@ with st.sidebar:
     st.subheader("⚙️ Retrieval settings")
     top_k = st.slider("Sources to retrieve per question", 3, 12, config.TOP_K_DEFAULT)
     distance_threshold = st.slider(
-        "Relevance threshold (lower = stricter)",
-        min_value=0.05,
-        max_value=1.5,
+        "Relevance threshold cos-dis(lower = stricter)",
+        min_value=0.1,
+        max_value=0.9,
         value=config.RAG_DISTANCE_THRESHOLD,
         step=0.05,
         help=(
