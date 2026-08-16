@@ -48,6 +48,21 @@ The current interface is a red-themed, responsive Streamlit workspace with a ric
 
 </div>
 
+### Stack Icon Wall
+
+<div align="center">
+  <a href="https://www.python.org/"><img src="https://cdn.simpleicons.org/python/3776AB" alt="Python" height="46"></a>&nbsp;&nbsp;
+  <a href="https://streamlit.io/"><img src="https://cdn.simpleicons.org/streamlit/FF4B4B" alt="Streamlit" height="46"></a>&nbsp;&nbsp;
+  <a href="https://ai.google.dev/"><img src="https://cdn.simpleicons.org/google/4285F4" alt="Google Gemini" height="46"></a>&nbsp;&nbsp;
+  <a href="https://www.trychroma.com/"><img src="https://cdn.simpleicons.org/chroma/F97316" alt="ChromaDB" height="46"></a>&nbsp;&nbsp;
+  <a href="https://huggingface.co/thenlper/gte-small"><img src="https://cdn.simpleicons.org/huggingface/FFD21E" alt="Sentence Transformers" height="46"></a>&nbsp;&nbsp;
+  <a href="https://plotly.com/python/"><img src="https://cdn.simpleicons.org/plotly/3F4F75" alt="Plotly" height="46"></a>&nbsp;&nbsp;
+  <a href="https://www.rssboard.org/rss-specification"><img src="https://cdn.simpleicons.org/rss/FFA500" alt="RSS" height="46"></a>&nbsp;&nbsp;
+  <a href="https://github.com/Samarssj/NewsPilot"><img src="https://cdn.simpleicons.org/github/181717" alt="GitHub" height="46"></a>
+  <br>
+  <sub><b>Python</b> · <b>Streamlit</b> · <b>Gemini</b> · <b>ChromaDB</b> · <b>Sentence Transformers</b> · <b>Plotly</b> · <b>RSS</b> · <b>GitHub</b></sub>
+</div>
+
 | Layer | Implementation |
 | --- | --- |
 | **Interface** | Streamlit, custom CSS, responsive layout, Plotly charts |
