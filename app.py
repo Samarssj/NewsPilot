@@ -331,7 +331,7 @@ def render_retrieval(retrieval: dict[str, Any] | None, expanded: bool = False) -
 
 def render_history_turn(turn: dict[str, Any]) -> None:
     role = turn.get("role", "assistant")
-    avatar = "◌" if role == "user" else "✦"
+    avatar = "user" if role == "user" else "assistant"
     with st.chat_message(role, avatar=avatar):
         if role == "assistant":
             render_stamp(turn.get("source", SOURCE_GEMINI))
@@ -464,10 +464,10 @@ question = clicked_suggestion or typed_question
 
 if question:
     st.session_state.chat_history.append({"role": "user", "content": question})
-    with st.chat_message("user", avatar="◌"):
+    with st.chat_message("user", avatar="user"):
         st.markdown(question)
 
-    with st.chat_message("assistant", avatar="✦"):
+    with st.chat_message("assistant", avatar="assistant"):
         with st.spinner("Searching the wire and composing a grounded answer…"):
             engine = get_engine(store)
             result = engine.ask(question, top_k=top_k)
