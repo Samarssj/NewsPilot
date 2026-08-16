@@ -265,6 +265,7 @@ class NewsVectorStore:
                     "published": article["published"],
                     "distance": article["distance"],
                     "article_id": article["article_id"],
+                    "chunk_count": len(ordered_chunks),
                 }
             )
 

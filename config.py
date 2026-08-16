@@ -8,10 +8,26 @@ anywhere in the project.
 """
 
 import os
-import streamlit as st
+from pathlib import Path
+
 from dotenv import load_dotenv
 
 load_dotenv()
+
+
+def _secret_or_env(name: str) -> str:
+    """Read a Streamlit secret when a secrets file exists, else use the env."""
+    secret_paths = (
+        Path.home() / ".streamlit" / "secrets.toml",
+        Path.cwd() / ".streamlit" / "secrets.toml",
+    )
+    if any(path.exists() for path in secret_paths):
+        try:
+            import streamlit as st
+            return st.secrets.get(name, os.getenv(name, ""))
+        except Exception:
+            pass
+    return os.getenv(name, "")
 
 
 def _get_bool(name: str, default: bool) -> bool:
@@ -50,15 +66,8 @@ def _get_int(name: str, default: int) -> int:
 
 # Kept for backward compatibility with any tooling/docs that still reference
 # Claude. The active generation engine for this project is Gemini (below).
-try:
-    GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
-except Exception:
-    GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
-
-try:
-    NEWSAPI_KEY = st.secrets["NEWSAPI_KEY"]
-except Exception:
-    NEWSAPI_KEY = os.getenv("NEWSAPI_KEY", "")
+GEMINI_API_KEY = _secret_or_env("GEMINI_API_KEY")
+NEWSAPI_KEY = _secret_or_env("NEWSAPI_KEY")
 
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-flash-latest")
 

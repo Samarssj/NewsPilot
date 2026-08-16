@@ -174,6 +174,20 @@ class NewsRAGEngine:
 
         relevant_hits = self._select_relevant_hits(hits)
         use_news = self._should_use_news(hits, relevant_hits)
+        retrieval = {
+            "raw_count": len(hits),
+            "relevant_count": len(relevant_hits),
+            "threshold": config.RAG_DISTANCE_THRESHOLD,
+            "hits": [
+                {
+                    "title": hit.get("title", "Untitled"),
+                    "source": hit.get("source", "Unknown source"),
+                    "distance": float(hit.get("distance", 0.0)),
+                    "chunk_count": int(hit.get("chunk_count", 1)),
+                }
+                for hit in hits
+            ],
+        }
 
         if use_news:
             logger.info(
@@ -189,6 +203,7 @@ class NewsRAGEngine:
                     "sources": [],
                     "source": SOURCE_NEWS,
                     "used_news": True,
+                    "retrieval": retrieval,
                 }
 
             return {
@@ -196,6 +211,7 @@ class NewsRAGEngine:
                 "sources": _to_sources(relevant_hits),
                 "source": SOURCE_NEWS,
                 "used_news": True,
+                "retrieval": retrieval,
             }
 
         # --- Fallback path: no good news match ---
@@ -209,6 +225,7 @@ class NewsRAGEngine:
                 "sources": [],
                 "source": SOURCE_NEWS,
                 "used_news": False,
+                "retrieval": retrieval,
             }
 
         logger.info(
@@ -226,4 +243,5 @@ class NewsRAGEngine:
             "sources": [],
             "source": SOURCE_GEMINI,
             "used_news": False,
+            "retrieval": retrieval,
         }

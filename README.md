@@ -1,303 +1,255 @@
-# 📰 NewsPilot — Hybrid News Intelligence Platform
+<div align="center">
 
-> **An AI-powered Hybrid RAG platform that delivers accurate, source-backed answers using live news and general AI knowledge.**
+# ✦ NewsPilot
 
-NewsPilot combines **Retrieval-Augmented Generation (RAG)** with **Google Gemini** to provide trustworthy responses. When relevant news exists in the local knowledge base, answers are generated from retrieved articles with citations. If no relevant news is found, PulseAI intelligently falls back to Gemini's general knowledge, ensuring users always receive meaningful responses.
+### A transparent AI newsroom for asking better questions about the latest news.
 
----
+NewsPilot combines live news ingestion, local semantic retrieval, and Google Gemini into a hybrid RAG workspace. When the local index contains strong evidence, the assistant answers from retrieved articles with citations. When the evidence is insufficient, it can transparently fall back to general knowledge instead of fabricating sources.
 
-## ✨ Features
+[![Open Repository](https://img.shields.io/badge/GitHub-Samarssj%2FNewsPilot-181717?style=for-the-badge&logo=github)](https://github.com/Samarssj/NewsPilot)
+[![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-1.40%2B-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://streamlit.io/)
+[![Gemini](https://img.shields.io/badge/Google%20Gemini-Generative%20AI-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://ai.google.dev/)
 
-* 📰 Fetches the latest news from **RSS Feeds** and **NewsAPI**
-* 🤖 Hybrid AI answering with **RAG + Gemini**
-* 📚 Local vector database using **ChromaDB**
-* 🔍 Semantic search powered by **Sentence Transformers**
-* 💬 Interactive Streamlit chat interface
-* 📎 Source-backed answers with clickable references
-* ⚡ Automatic fallback to Gemini when news is unavailable
-* 💾 Local embeddings and vector storage
-* 🎯 Configurable retrieval settings
+</div>
 
 ---
 
-# 🏗️ System Architecture
+## Why NewsPilot?
 
-```text
-                ┌───────────────────────────┐
-                │   RSS Feeds / NewsAPI     │
-                └─────────────┬─────────────┘
-                              │
-                              ▼
-                    Fetch Latest Articles
-                              │
-                              ▼
-                     Text Chunking Engine
-                              │
-                              ▼
-             SentenceTransformer Embeddings
-                              │
-                              ▼
-                  ChromaDB Vector Database
-                              │
-               ┌──────────────┴──────────────┐
-               │                             │
-               ▼                             ▼
-      Retrieve Relevant Chunks      No Relevant Chunks
-               │                             │
-               ▼                             ▼
-         News-Based Response        Gemini Knowledge
-               │                             │
-               └──────────────┬──────────────┘
-                              ▼
-                 Final Answer with Sources
+Traditional chat interfaces often hide where an answer came from. NewsPilot is designed around a different principle: **the answer and the evidence should be visible together**. The application retrieves relevant article chunks, scores their semantic distance, routes the question through a grounded or fallback path, and exposes the retrieval trace through interactive visualizations.
+
+The current interface is a red-themed, responsive Streamlit workspace with a richer chat environment, source cards, retrieval-distance graphs, supporting-chunk graphs, light/dark mode, and mobile-safe sidebar behavior.
+
+## Product Highlights
+
+| Capability | What it provides |
+| --- | --- |
+| **Live news index** | Ingests current stories from RSS feeds and optional NewsAPI queries. |
+| **Local semantic memory** | Chunks article text, embeds it locally, and persists it in ChromaDB. |
+| **Hybrid answer routing** | Uses grounded news context when relevance is strong and optionally falls back to Gemini knowledge. |
+| **Transparent citations** | Displays clickable article references beside news-grounded answers. |
+| **Retrieval graph** | Visualizes article relevance distance, where lower distance means a closer semantic match. |
+| **Chunk graph** | Shows how many supporting chunks were merged for each retrieved article. |
+| **Responsive workspace** | Includes a collapsible mobile sidebar, explicit light-mode controls, and accessible red-theme contrast. |
+
+## Technology Stack
+
+<div align="center">
+
+[![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=flat-square&logo=streamlit&logoColor=white)](https://streamlit.io/)
+[![Google Gemini](https://img.shields.io/badge/Google%20Gemini-4285F4?style=flat-square&logo=google&logoColor=white)](https://ai.google.dev/)
+[![ChromaDB](https://img.shields.io/badge/ChromaDB-F97316?style=flat-square&logo=database&logoColor=white)](https://www.trychroma.com/)
+[![Sentence Transformers](https://img.shields.io/badge/Sentence%20Transformers-111827?style=flat-square&logo=huggingface&logoColor=yellow)](https://www.sbert.net/)
+[![Plotly](https://img.shields.io/badge/Plotly-3F4F75?style=flat-square&logo=plotly&logoColor=white)](https://plotly.com/python/)
+[![RSS](https://img.shields.io/badge/RSS-FFA500?style=flat-square&logo=rss&logoColor=white)](https://www.rssboard.org/rss-specification)
+[![NewsAPI](https://img.shields.io/badge/NewsAPI-111827?style=flat-square&logo=newsapi&logoColor=white)](https://newsapi.org/)
+
+</div>
+
+| Layer | Implementation |
+| --- | --- |
+| **Interface** | Streamlit, custom CSS, responsive layout, Plotly charts |
+| **Language** | Python |
+| **Generation** | Google Gemini Generative AI |
+| **Embeddings** | Sentence Transformers with `all-MiniLM-L6-v2` by default |
+| **Vector store** | Persistent ChromaDB collection |
+| **Ingestion** | RSS feeds, optional NewsAPI, BeautifulSoup, newspaper3k |
+| **Configuration** | `.env` variables with optional Streamlit secrets support |
+
+The interface uses Streamlit [1], generation uses Google Gemini [2], vector persistence uses ChromaDB [3], embeddings use Sentence Transformers [4], and retrieval charts use Plotly [5]. RSS ingestion follows the RSS 2.0 format [7], while NewsAPI remains an optional news provider [6].
+
+## Architecture
+
+```mermaid
+flowchart LR
+    A[RSS Feeds] --> C[News Fetcher]
+    B[NewsAPI optional] --> C
+    C --> D[Clean and normalize articles]
+    D --> E[Chunk text]
+    E --> F[Sentence Transformer embeddings]
+    F --> G[(Persistent ChromaDB index)]
+
+    Q[User question] --> H[Query embedding and retrieval]
+    G --> H
+    H --> I{Enough relevant evidence?}
+    I -->|Yes| J[Grounded Gemini answer]
+    I -->|No and fallback enabled| K[Gemini general knowledge]
+    I -->|No and fallback disabled| L[Transparent insufficient-context response]
+
+    J --> M[Answer + citations + retrieval trace]
+    K --> N[Answer + fallback badge]
+    L --> N
 ```
 
----
+The retrieval engine does not force unrelated articles into an answer. It filters results using a configurable distance threshold and minimum-relevance rule. The interface receives the same retrieval metadata used for routing, which keeps the charts and answer badges tied to real query results rather than simulated analytics.
 
-# 🚀 Tech Stack
+## End-to-End Workflow
 
-| Category        | Technology                           |
-| --------------- | ------------------------------------ |
-| Frontend        | Streamlit                            |
-| LLM             | Google Gemini                        |
-| Vector Database | ChromaDB                             |
-| Embeddings      | Sentence Transformers                |
-| Data Sources    | RSS Feeds, NewsAPI                   |
-| Language        | Python                               |
-| Retrieval       | RAG (Retrieval-Augmented Generation) |
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant UI as Streamlit workspace
+    participant R as RAG engine
+    participant V as ChromaDB
+    participant G as Gemini
 
----
+    U->>UI: Ask a news question
+    UI->>R: Submit question and top-k setting
+    R->>V: Search indexed article chunks
+    V-->>R: Ranked hits and distances
+    R->>R: Apply relevance threshold
 
-# ⚙️ How It Works
+    alt Relevant news found
+        R->>G: Generate answer from numbered excerpts
+        G-->>R: Cited grounded response
+        R-->>UI: Answer, sources, distances, chunk counts
+    else Evidence is insufficient
+        R->>G: Generate fallback response without fabricated citations
+        G-->>R: General-knowledge response
+        R-->>UI: Answer and fallback metadata
+    end
 
-### 1️⃣ News Collection
+    UI-->>U: Chat response, source cards, retrieval graph, chunk graph
+```
 
-Newspilot continuously fetches news from:
+## Interface Tour
 
-* RSS Feeds
-* NewsAPI *(optional)*
+The workspace is organized around five visible surfaces:
 
-Articles are cleaned and normalized before processing.
+1. **Hero workspace.** A concise explanation of the assistant’s routing behavior, live index size, retrieval mode, and top-k configuration.
+2. **Session metrics.** Indexed chunks, conversation turns, latest relevant hits, and current answer mode.
+3. **Chat environment.** Suggested investigations, answer-source badges, clickable source cards, and a persistent chat input.
+4. **Retrieval inspection.** Interactive Plotly charts for relevance distance and supporting chunks per article.
+5. **Control sidebar.** News refresh, topic filtering, full-text extraction, top-k, relevance threshold, fallback behavior, theme switching, and conversation reset.
 
----
-
-### 2️⃣ Local Embedding
-
-Each article is
-
-* Split into semantic chunks
-* Converted into embeddings using Sentence Transformers
-* Stored locally inside ChromaDB
-
-No embeddings are generated using external APIs.
-
----
-
-### 3️⃣ Intelligent Retrieval
-
-When a question is asked:
-
-* The query is embedded
-* Top-K most relevant chunks are retrieved
-* Similarity threshold determines whether the retrieved news is sufficiently relevant
-
----
-
-### 4️⃣ Hybrid Response Generation
-
-If relevant articles exist:
-
-> ✅ Answer is generated using retrieved news with citations.
-
-Otherwise:
-
-> 🤖 Gemini answers using its general knowledge.
-
-This hybrid workflow provides both **freshness** and **broad knowledge coverage**.
-
----
-
-# 📂 Project Structure
+## Project Structure
 
 ```text
-PulseAI/
-│
-├── app.py                 # Streamlit Web Interface
-├── config.py              # Project Configuration
-├── news_fetcher.py        # RSS & NewsAPI Fetching
-├── vector_store.py        # ChromaDB + Embeddings
-├── rag_engine.py          # Hybrid RAG Pipeline
-├── ingest.py              # Fetch & Index News
-├── ask.py                 # Command-Line Assistant
-├── feeds.txt              # Custom RSS Feeds
-├── requirements.txt
-├── .env.example
+NewsPilot/
+├── app.py                 # Streamlit workspace and visualization layer
+├── config.py              # Environment, model, chunking, and retrieval settings
+├── news_fetcher.py        # RSS and NewsAPI ingestion
+├── vector_store.py        # Chunking, embeddings, ChromaDB persistence, retrieval
+├── rag_engine.py          # Relevance routing and Gemini answer generation
+├── ingest.py              # Command-line news ingestion
+├── ask.py                 # Command-line question answering
+├── feeds.txt              # Custom RSS feed URLs
+├── requirements.txt       # Python dependencies
+├── runtime.txt            # Runtime declaration
 └── data/
-    └── chroma/            # Local Vector Database
+    └── chroma/            # Local persistent vector index, created at runtime
 ```
 
----
+## Quick Start
 
-# ⚡ Installation
-
-### Clone Repository
+### 1. Clone the repository
 
 ```bash
-git clone <repository-url>
-cd PulseAI
+git clone https://github.com/Samarssj/NewsPilot.git
+cd NewsPilot
 ```
 
-### Create Virtual Environment
+### 2. Create and activate a virtual environment
 
 ```bash
-python -m venv venv
+python -m venv .venv
+source .venv/bin/activate
 ```
 
-Linux / macOS
+On Windows PowerShell:
 
-```bash
-source venv/bin/activate
+```powershell
+.venv\Scripts\Activate.ps1
 ```
 
-Windows
-
-```bash
-venv\Scripts\activate
-```
-
-### Install Dependencies
+### 3. Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
----
+### 4. Configure environment variables
 
-# 🔑 Environment Variables
-
-Create a `.env` file.
+Create a `.env` file in the project root:
 
 ```env
-GEMINI_API_KEY=YOUR_API_KEY
-NEWSAPI_KEY=YOUR_OPTIONAL_KEY
+GEMINI_API_KEY=your_gemini_api_key
+NEWSAPI_KEY=your_optional_newsapi_key
 ```
 
-> **NewsAPI is optional.** news pilot works using RSS feeds even without it.
+`NEWSAPI_KEY` is optional because the application can ingest from the configured RSS feeds. Keep `.env` private and do not commit credentials.
 
----
-
-# ▶️ Usage
-
-## Fetch Latest News
-
-```bash
-python ingest.py
-```
-
-Optional commands
-
-```bash
-python ingest.py --no-fulltext
-
-python ingest.py --query "Artificial Intelligence"
-
-python ingest.py --feeds feeds.txt
-```
-
----
-
-## Ask Questions (CLI)
-
-```bash
-python ask.py
-```
-
-or
-
-```bash
-python ask.py "Latest AI regulations"
-```
-
----
-
-## Launch Web Application
+### 5. Launch the workspace
 
 ```bash
 streamlit run app.py
 ```
 
----
+Then open the local Streamlit URL shown in your terminal. Use **Refresh news index** in the sidebar before asking questions if the local collection is empty.
 
-# 💬 Example Questions
+## Command-Line Usage
 
-* What's happening in the AI industry today?
-* Latest developments in the stock market?
-* Explain the recent Israel–Iran conflict.
-* What are today's technology headlines?
-* Tell me the latest sports news.
-* What's the current state of cryptocurrency?
+Fetch and index the latest news:
 
----
+```bash
+python ingest.py
+```
 
-# 📊 Hybrid Answer Flow
+Fetch without full-text extraction:
 
-| Situation               | Response Source        |
-| ----------------------- | ---------------------- |
-| Relevant news available | 📰 Local News Database |
-| No relevant news found  | 🤖 Gemini Knowledge    |
+```bash
+python ingest.py --no-fulltext
+```
 
----
+Fetch for a topic or custom feed file:
 
-# 🎯 Why PulseAI?
+```bash
+python ingest.py --query "artificial intelligence"
+python ingest.py --feeds feeds.txt
+```
 
-Unlike traditional chatbots that rely solely on an LLM or static retrieval, NewsPilot intelligently combines both approaches.
+Ask a question from the command line:
 
-✅ Live News Retrieval
+```bash
+python ask.py "What are the latest developments in AI regulation?"
+```
 
-✅ Semantic Search
+## Retrieval Controls
 
-✅ Source-backed Answers
+| Setting | Meaning |
+| --- | --- |
+| **Top-k** | Maximum number of distinct articles considered for a question. |
+| **Relevance threshold** | Maximum semantic distance accepted as grounded evidence; lower values are stricter. |
+| **Minimum relevant chunks** | Minimum number of threshold-passing results required for the news route. |
+| **General-knowledge fallback** | Allows Gemini to answer when the local news index is not sufficiently relevant. |
+| **Chunk size and overlap** | Controls how article text is segmented before embedding. |
 
-✅ Local Vector Storage
+## Answer Routing
 
-✅ Hybrid AI Responses
+| Retrieval condition | UI behavior | Source label |
+| --- | --- | --- |
+| Strong article matches | Generates an answer from numbered excerpts and displays citations. | **Grounded in live news** |
+| No strong matches, fallback enabled | Generates a general response without pretending that uncited claims came from the news index. | **General knowledge fallback** |
+| No strong matches, fallback disabled | Explains that the local context is insufficient. | **Strict live news** |
 
-✅ Fast and Lightweight
+## Development Notes
 
----
+ChromaDB persists the local collection under the configured `CHROMA_PATH`. Article content may come from full-text extraction or RSS summaries when extraction is unavailable. Paywalled or highly dynamic pages may only contribute their feed summary. Retrieval quality depends on index freshness, source quality, chunking parameters, and the configured embedding model.
 
-# 🔮 Future Improvements
+The current interface stores the conversation and retrieval trace in Streamlit session state. Long-term user accounts, shared histories, scheduled ingestion, and cloud-hosted vector storage remain natural next steps for a production deployment.
 
-* User authentication
-* Chat history persistence
-* News summarization
-* Trending topic analytics
-* Multi-language support
-* Voice interaction
-* Real-time streaming responses
-* Docker deployment
-* Cloud-hosted vector database
-* Admin dashboard
+## References
 
----
+[1]: https://streamlit.io/ "Streamlit — build data apps in Python"
+[2]: https://ai.google.dev/ "Google AI for Developers"
+[3]: https://www.trychroma.com/ "Chroma — AI-native open-source embedding database"
+[4]: https://www.sbert.net/ "Sentence Transformers documentation"
+[5]: https://plotly.com/python/ "Plotly Python graphing library"
+[6]: https://newsapi.org/ "NewsAPI documentation"
+[7]: https://www.rssboard.org/rss-specification "RSS 2.0 Specification"
 
-# 📌 Notes
+## License
 
-* ChromaDB persists data locally.
-* Full-text extraction may not work for paywalled websites.
-* RSS summaries are used automatically when extraction fails.
-* The quality of responses depends on indexed news freshness.
-* Gemini fallback ensures the assistant remains useful even when relevant news is unavailable.
-
----
-
-# 📄 License
-
-This project is intended for educational, research, and portfolio purposes. Feel free to modify and extend it for your own use.
-
----
-
-## ⭐ If you found this project useful, consider giving it a star!
-<img width="1440" height="900" alt="Screenshot 2026-07-04 at 02 19 04" src="https://github.com/user-attachments/assets/344d6246-1e74-41ae-a52a-17cdc210f7f5" />
-
-
+This project is intended for educational, research, and portfolio use. Extend it responsibly, keep credentials private, and verify cited sources before making consequential decisions.
