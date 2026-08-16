@@ -238,6 +238,11 @@ def icon(name: str) -> str:
     return f"<span class='ui-icon' aria-hidden='true'>{ICON_GLYPHS.get(name, '•')}</span>"
 
 
+def plain_icon(name: str) -> str:
+    """Return a text-only icon for Streamlit-native labels that do not parse HTML."""
+    return ICON_GLYPHS.get(name, "•")
+
+
 def render_metric(label: str, value: str, note: str, icon_name: str) -> str:
     return (
         f"<div class='metric-card'><div class='metric-top'><span>{label}</span>"
@@ -256,7 +261,7 @@ def render_stamp(source: str) -> None:
 def render_sources(sources: list[dict[str, Any]] | None) -> None:
     if not sources:
         return
-    with st.expander(f"View {len(sources)} cited source(s)", expanded=False):
+    with st.expander(f"{plain_icon('link')} View {len(sources)} cited source(s)", expanded=False):
         for source in sources:
             title = html.escape(source.get("title") or "Untitled article")
             url = html.escape(source.get("url") or "#", quote=True)
@@ -286,7 +291,7 @@ def render_retrieval(retrieval: dict[str, Any] | None, expanded: bool = False) -
         unsafe_allow_html=True,
     )
 
-    with st.expander("Inspect retrieval graph", expanded=expanded):
+    with st.expander(f"{plain_icon('insights')} Inspect retrieval graph", expanded=expanded):
         if not hits:
             st.markdown("<div class='empty-state'>No indexed chunks were close enough to plot for this question.</div>", unsafe_allow_html=True)
             return
